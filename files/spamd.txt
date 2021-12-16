@@ -1,0 +1,16 @@
+# Ansible managed
+# Fichero de patrones GROK para Spamd de la predefinida 'spamd'
+
+# Fragmentos de patrón
+SPAMD_TS %{SYSLOGTIMESTAMP:timestamp:ts-syslog}
+SPAMD_PID \[%{NUMBER:spamd_pid:drop}\]
+SPAMD_SCORES \(%{NUMBER:spamd_score:float}/%{NUMBER:spamd_required_score:float}\)
+SPAMD_USERNAME (%{USERNAME:spamd_username:drop})
+SPAMD_USERID ([0-9]+)
+SPAMD_DURATION %{NUMBER:spamd_time:float} seconds
+SPAMD_SIZE %{NUMBER:spamd_size_bytes:int} bytes
+SPAMD_MESSAGE_TYPE (identified spam|clean message)
+SPAMD_MESSAGE_TYPE_TAG %{SPAMD_MESSAGE_TYPE}"
+
+# Patrón para hacer hit a un mensaje que es SPAM
+SPAMD_SPAM_LINE %{SPAMD_TS}\.[0-9]+ %{SPAMD_PID} info: spamd: %{SPAMD_MESSAGE_TYPE:classification_result:tag} %{SPAMD_SCORES} for %{SPAMD_USERNAME}:%{SPAMD_USERID} in %{SPAMD_DURATION}, %{SPAMD_SIZE}\.
